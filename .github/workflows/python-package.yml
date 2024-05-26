@@ -24,10 +24,11 @@ jobs:
     - name: clone Cyclone DDS
       run: |
         git clone https://github.com/eclipse-cyclonedds/cyclonedds -b releases/0.10.x --depth=1
-        cd cyclonedds && mkdir build && mkdir install && cd build
     - name: build Cyclone DDS
       run: |
-        set DCMAKE_INSTALL_PREFIX=../install
+        cd cyclonedds && mkdir build && mkdir install
+        cmake .. -DCMAKE_INSTALL_PREFIX=../install
+        cd build
         cmake --build . --target install
     - name: Install dependencies
       run: |
