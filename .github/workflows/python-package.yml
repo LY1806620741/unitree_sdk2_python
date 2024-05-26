@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.9", "3.10", "3.11"]
+        python-version: ["3.11"]
 
     steps:
     - uses: actions/checkout@v4
@@ -24,7 +24,7 @@ jobs:
     - name: build Cyclone DDS
       run: |
         git clone https://github.com/eclipse-cyclonedds/cyclonedds -b releases/0.10.x --depth=1
-        cd cyclonedds && mkdir build install && cd build
+        cd cyclonedds && mkdir build && mkdir install && cd build
         DCMAKE_INSTALL_PREFIX=../install
         cmake --build . --target install
     - name: Install dependencies
