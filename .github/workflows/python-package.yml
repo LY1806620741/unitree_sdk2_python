@@ -25,7 +25,9 @@ jobs:
       run: |
         git clone https://github.com/eclipse-cyclonedds/cyclonedds -b releases/0.10.x --depth=1
         cd cyclonedds && mkdir build && mkdir install && cd build
+        echo "诊断"
         set DCMAKE_INSTALL_PREFIX=../install
+        echo "测试"
         cmake --build . --target install
     - name: Install dependencies
       run: |
