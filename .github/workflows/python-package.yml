@@ -23,7 +23,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: build Cyclone DDS
       run: |
-        git clone https://github.com/eclipse-cyclonedds/cyclonedds -b releases/0.10.5 --depth=1
+        git clone https://github.com/eclipse-cyclonedds/cyclonedds -b releases/0.10.x --depth=1
         cd cyclonedds && mkdir build install && cd build
         DCMAKE_INSTALL_PREFIX=../install
         cmake --build . --target install
