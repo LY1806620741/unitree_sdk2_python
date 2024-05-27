@@ -36,6 +36,7 @@ jobs:
         cmake --build . --target install
         cd ..
         tar zcvf  cyclonedds.tar.gz install
+      shell: cmd.exe
 
     - name: Install dependencies
       run: |
