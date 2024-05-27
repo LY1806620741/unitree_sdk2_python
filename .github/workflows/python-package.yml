@@ -32,7 +32,7 @@ jobs:
         cmake --build . --target install
         cd ..
         dir 
-        tar zxvf  cyclonedds.tar.gz install
+        tar zcvf  cyclonedds.tar.gz install
     - name: upload Cyclone
       uses: actions/upload-artifact@v4
       with:
