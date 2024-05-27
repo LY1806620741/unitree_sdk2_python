@@ -47,6 +47,8 @@ jobs:
         git clone https://github.com/eclipse-cyclonedds/cyclonedds-python -b releases/${{ env.VERSION }} --depth=1
         cd cyclonedds-python
         set CYCLONEDDS_HOME=${{ github.workspace }}/cyclonedds/install
+        echo %CYCLONEDDS_HOME%
+        tree ${{ github.workspace }}/cyclonedds/install
         python -m build --wheel
 
     - name: build package
