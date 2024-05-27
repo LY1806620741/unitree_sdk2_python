@@ -36,7 +36,7 @@ jobs:
         cmake --build . --target install
         cd ..
         tar zcvf  cyclonedds.tar.gz install
-      shell: cmd.exe
+      shell: cmd
 
     - name: Install dependencies
       run: |
@@ -59,7 +59,7 @@ jobs:
     - name: upload package and dependency
       uses: actions/upload-artifact@v4
       with:
-        name: unitree_sdk2_python${{ matrix.python-version }}_${{ env.VERSION }}
+        name: unitree_sdk2_python${{ matrix.python-version }}_${{ env.VERSION }}_winx64
         path:  |
           dist/*
           cyclonedds-python/dist/*
