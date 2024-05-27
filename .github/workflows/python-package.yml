@@ -32,7 +32,7 @@ jobs:
       run: |
         cd cyclonedds && mkdir build && mkdir install
         cd build
-        cmake .. -DCMAKE_INSTALL_PREFIX=..\install
+        cmake .. -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/cyclonedds/install
         cmake --build . --target install
         cd ..
         tar zcvf  cyclonedds.tar.gz install
