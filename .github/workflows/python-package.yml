@@ -51,11 +51,13 @@ jobs:
         echo %CYCLONEDDS_HOME%
         tree ${{ github.workspace }}/cyclonedds/install
         python -m build --wheel
+      shell: cmd
 
     - name: build package
       run: |
         set CYCLONEDDS_HOME=${{ github.workspace }}/cyclonedds/install
-        python -m build --wheel 
+        python -m build --wheel
+      shell: cmd
     - name: upload package and dependency
       uses: actions/upload-artifact@v4
       with:
