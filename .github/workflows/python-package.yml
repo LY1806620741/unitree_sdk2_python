@@ -44,7 +44,7 @@ jobs:
         pip install build
     - name: build package
       run: |
-        CYCLONEDDS_HOME="~/cyclonedds/install"
+        set CYCLONEDDS_HOME=${{ github.workspace }}/cyclonedds/install
         python -m build --wheel 
     - name: upload package
       uses: actions/upload-artifact@v4
