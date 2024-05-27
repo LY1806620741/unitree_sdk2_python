@@ -33,6 +33,7 @@ jobs:
         cd ..
         dir 
         tar zcvf  cyclonedds.tar.gz install
+        tree
     - name: upload Cyclone
       uses: actions/upload-artifact@v4
       with:
@@ -50,5 +51,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: unitree_sdk2_python
-        path: build/*
+        path: dist/*
 
