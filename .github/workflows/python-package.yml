@@ -10,6 +10,8 @@ jobs:
   build:
 
     runs-on: windows-latest
+    env:
+      VERSION: 0.10.x
     strategy:
       fail-fast: false
       matrix:
@@ -21,35 +23,42 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
+
     - name: clone Cyclone DDS
       run: |
-        git clone https://github.com/eclipse-cyclonedds/cyclonedds -b releases/0.10.x --depth=1
+        git clone https://github.com/eclipse-cyclonedds/cyclonedds -b releases/${{ env.VERSION }} --depth=1
+
     - name: build Cyclone DDS
       run: |
         cd cyclonedds && mkdir build && mkdir install
         cd build
-        cmake .. -DCMAKE_INSTALL_PREFIX=../install
+        cmake .. -DCMAKE_INSTALL_PREFIX=..\install
         cmake --build . --target install
         cd ..
-        dir 
         tar zcvf  cyclonedds.tar.gz install
-        tree
-    - name: upload Cyclone
-      uses: actions/upload-artifact@v4
-      with:
-        name: cyclonedds_binary_x64.tar.gz
-        path: cyclonedds/cyclonedds.tar.gz
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install build
+
+    - name: build cyclonedds-python
+      run: |
+        git clone https://github.com/eclipse-cyclonedds/cyclonedds-python -b releases/${{ env.VERSION }} --depth=1
+        cd cyclonedds-python
+        set CYCLONEDDS_HOME=${{ github.workspace }}/cyclonedds/install
+        python -m build --wheel
+
     - name: build package
       run: |
         set CYCLONEDDS_HOME=${{ github.workspace }}/cyclonedds/install
         python -m build --wheel 
-    - name: upload package
+    - name: upload package and dependency
       uses: actions/upload-artifact@v4
       with:
-        name: unitree_sdk2_python
-        path: dist/*
+        name: unitree_sdk2_python${{ matrix.python-version }}_${{ env.VERSION }}
+        path:  |
+          dist/*
+          cyclonedds-python/dist/*
+          cyclonedds/cyclonedds.tar.gz
 
