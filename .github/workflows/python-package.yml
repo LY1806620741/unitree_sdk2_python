@@ -27,18 +27,31 @@ jobs:
     - name: build Cyclone DDS
       run: |
         cd cyclonedds && mkdir build && mkdir install
-        echo %cd%
         cd build
         cmake .. -DCMAKE_INSTALL_PREFIX=../install
-        echo %cd%
         cmake --build . --target install
+        cd ..
+        dir 
+        tar zxvf  cyclonedds.tar.gz install
+    - name: upload Cyclone
+      uses: actions/upload-artifact@v4
+      with:
+        name: cyclonedds_binary_x64.tar.gz
+        path: cyclonedds/cyclonedds.tar.gz
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install build
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        IF EXIST requirements.txt (
+            pip install -r requirements.txt
+        )
     - name: build package
       run: |
         CYCLONEDDS_HOME="~/cyclonedds/install"
         python -m build --wheel 
+    - name: upload package
+      uses: actions/upload-artifact@v4
+      with:
+        name: unitree_sdk2_python
+        path: build/*
 
