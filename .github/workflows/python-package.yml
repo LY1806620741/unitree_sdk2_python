@@ -27,8 +27,10 @@ jobs:
     - name: build Cyclone DDS
       run: |
         cd cyclonedds && mkdir build && mkdir install
-        cmake .. -DCMAKE_INSTALL_PREFIX=../install
+        echo %cd%
         cd build
+        cmake .. -DCMAKE_INSTALL_PREFIX=../install
+        echo %cd%
         cmake --build . --target install
     - name: Install dependencies
       run: |
