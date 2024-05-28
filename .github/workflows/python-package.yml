@@ -57,6 +57,7 @@ jobs:
         cd cyclonedds-python
         set CYCLONEDDS_HOME=${{ github.workspace }}/cyclonedds/install
         pip3 install --user pyoxidizer
+        dir
         pyoxidizer build
       shell: cmd
 
