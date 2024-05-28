@@ -12,7 +12,7 @@ jobs:
     runs-on: windows-latest
     env:
       VERSION: 0.10.x
-      CIBW_BUILD: 311-*
+      CIBW_SKIP: 3{6..10}
     strategy:
       fail-fast: false
       matrix:
@@ -45,8 +45,8 @@ jobs:
         git clone https://github.com/eclipse-cyclonedds/cyclonedds-python -b releases/${{ env.VERSION }} --depth=1
         cd cyclonedds-python
         (Get-Content pyproject.toml) -replace 'https://github.com/eclipse-cyclonedds/cyclonedds.git','https://github.com/eclipse-cyclonedds/cyclonedds -b releases/${{ env.VERSION }} --depth=1' | Set-Content pyproject.toml
-        (Get-Content setup.py) -replace '(?<="Programming Language :: Python :: 3.10",.*?)', "`n        `"Programming Language :: Python :: 3.11`","  | Set-Content setup.py
-        pip install --user cibuildwheel==2.8.*
+        (Get-Content setup.py) -replace '(?<="Programming Language :: Python :: 3.10",.*?)', "`n        `"Programming Language :: Python :: 3.11`",`n        `"Programming Language :: Python :: 3.12`",`n        `"Programming Language :: Python :: 3.13`","  | Set-Content setup.py
+        pip install --user cibuildwheel==2.18.*
         python -m cibuildwheel --output-dir wheelhouse .
         tar zcvf  cyclonedds.tar.gz -C cyclonedds-build .
       shell: pwsh
