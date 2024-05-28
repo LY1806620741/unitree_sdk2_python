@@ -56,9 +56,8 @@ jobs:
         git clone https://github.com/eclipse-cyclonedds/cyclonedds-python -b releases/${{ env.VERSION }} --depth=1
         cd cyclonedds-python
         set CYCLONEDDS_HOME=${{ github.workspace }}/cyclonedds/install
-        pip3 install --user pyoxidizer
-        dir
-        pyoxidizer build
+        set STANDALONE_WHEELS=1
+        python -m build --wheel
       shell: cmd
 
     # 构建宇树python sdk本身
