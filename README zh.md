@@ -1,3 +1,16 @@
+# Diff
+
+与原版不一样的是封装了window x64的依赖，增加了当前的wheel包.
+
+## unitree_sdk2_py (python3.11 winx64)
+
+`pip install https://github.com/LY1806620741/unitree_sdk2_python/releases/download/3.11/unitree_sdk2py-1.0.0-py3-none-any.whl`
+
+## 依赖包（winx64)）
+> 目前官方还未打3.11的包，我在release中也提供了3.12的包和C动态的库
+
+`pip install https://github.com/LY1806620741/unitree_sdk2_python/releases/download/3.11/cyclonedds-0.10.2-cp311-cp311-win_amd64.whl`
+
 # unitree_sdk2_python
 unitree_sdk2 python 接口
 
