@@ -12,6 +12,7 @@ jobs:
     runs-on: windows-latest
     env:
       VERSION: 0.10.x
+      CIBW_BUILD: 311-*
     strategy:
       fail-fast: false
       matrix:
@@ -43,11 +44,12 @@ jobs:
       run: |
         git clone https://github.com/eclipse-cyclonedds/cyclonedds-python -b releases/${{ env.VERSION }} --depth=1
         cd cyclonedds-python
-        powershell -Command "(Get-Content pyproject.toml) -replace 'https://github.com/eclipse-cyclonedds/cyclonedds.git','https://github.com/eclipse-cyclonedds/cyclonedds -b releases/${{ env.VERSION }} --depth=1' | Set-Content pyproject.toml"
+        (Get-Content pyproject.toml) -replace 'https://github.com/eclipse-cyclonedds/cyclonedds.git','https://github.com/eclipse-cyclonedds/cyclonedds -b releases/${{ env.VERSION }} --depth=1' | Set-Content pyproject.toml
+        (Get-Content setup.py) -replace '(?<="Programming Language :: Python :: 3.10",.*?)', "`n        `"Programming Language :: Python :: 3.11`","  | Set-Content setup.py"
         pip install --user cibuildwheel==2.8.*
         python -m cibuildwheel --output-dir wheelhouse .
         tar zcvf  cyclonedds.tar.gz -C cyclonedds-build .
-      shell: cmd
+      shell: pwsh
 
     # 构建宇树python sdk本身
     - name: build package
