@@ -45,6 +45,7 @@ jobs:
         cd cyclonedds-python
         (Get-Content pyproject.toml) -replace 'https://github.com/eclipse-cyclonedds/cyclonedds.git','https://github.com/eclipse-cyclonedds/cyclonedds -b releases/${{ env.VERSION }} --depth=1' | Set-Content pyproject.toml
         (Get-Content pyproject.toml) -replace '(?<=^skip = ")','cp3{6..10}-* ' | Set-Content pyproject.toml
+        (Get-Content pyproject.toml) -replace 'delvewheel==0.0.18','delvewheel==1.6.0' | Set-Content pyproject.toml
         (Get-Content setup.py) -replace '(?<="Programming Language :: Python :: 3.10",.*?)', "`n        `"Programming Language :: Python :: 3.11`",`n        `"Programming Language :: Python :: 3.12`",`n        `"Programming Language :: Python :: 3.13`","  | Set-Content setup.py
         pip install --user cibuildwheel==2.18.*
         python -m cibuildwheel --output-dir wheelhouse .
