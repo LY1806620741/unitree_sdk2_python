@@ -41,7 +41,7 @@ jobs:
         cmake .. -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/cyclonedds/install
         cmake --build . --target install
         cd ..
-        tar zcvf  cyclonedds.tar.gz install/*
+        tar zcvf  cyclonedds.tar.gz -C install .
       shell: cmd
 
     # 准备构建python wheel包
@@ -56,7 +56,8 @@ jobs:
         git clone https://github.com/eclipse-cyclonedds/cyclonedds-python -b releases/${{ env.VERSION }} --depth=1
         cd cyclonedds-python
         set CYCLONEDDS_HOME=${{ github.workspace }}/cyclonedds/install
-        python -m build --wheel
+        pip3 install --user pyoxidizer
+        pyoxidizer build
       shell: cmd
 
     # 构建宇树python sdk本身
