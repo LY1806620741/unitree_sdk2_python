@@ -31,18 +31,6 @@ jobs:
     - name: init dist
       run: |
         mkdir dist
-       
-    # 构建C lib依赖
-    - name: build Cyclone DDS
-      run: |
-        git clone https://github.com/eclipse-cyclonedds/cyclonedds -b releases/${{ env.VERSION }} --depth=1
-        cd cyclonedds && mkdir build && mkdir install
-        cd build
-        cmake .. -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/cyclonedds/install
-        cmake --build . --target install
-        cd ..
-        tar zcvf  cyclonedds.tar.gz -C install .
-      shell: cmd
 
     # 准备构建python wheel包
     - name: Install dependencies
@@ -55,10 +43,10 @@ jobs:
       run: |
         git clone https://github.com/eclipse-cyclonedds/cyclonedds-python -b releases/${{ env.VERSION }} --depth=1
         cd cyclonedds-python
-        set CYCLONEDDS_HOME=${{ github.workspace }}/cyclonedds/install
-        set STANDALONE_WHEELS=1
+        powershell -Command "(Get-Content pyproject.toml) -replace 'https://github.com/eclipse-cyclonedds/cyclonedds.git','https://github.com/eclipse-cyclonedds/cyclonedds -b releases/${{ env.VERSION }} --depth=1' | Set-Content pyproject.toml"
         pip install --user cibuildwheel==2.8.*
         python -m cibuildwheel --output-dir wheelhouse .
+        tar zcvf  cyclonedds.tar.gz -C cyclonedds-build .
       shell: cmd
 
     # 构建宇树python sdk本身
@@ -71,7 +59,7 @@ jobs:
     # 收集构建产物
     - name: collect binary
       run: |
-        mv ${{ github.workspace }}/cyclonedds/cyclonedds.tar.gz dist/cyclonedds_${{ env.VERSION }}_winx64.tar.gz
+        mv ${{ github.workspace }}/cyclonedds-python/cyclonedds.tar.gz dist/cyclonedds_${{ env.VERSION }}_winx64.tar.gz
         mv ${{ github.workspace }}/cyclonedds-python/wheelhouse/* dist/
         mv ${{ github.workspace }}/dist/* dist/
 
