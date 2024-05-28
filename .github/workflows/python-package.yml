@@ -12,7 +12,7 @@ jobs:
     runs-on: windows-latest
     env:
       VERSION: 0.10.x
-      CIBW_SKIP: 3{6..10}
+      CIBW_SKIP: 3{6..10}-*
     strategy:
       fail-fast: false
       matrix:
