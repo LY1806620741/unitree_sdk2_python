@@ -54,8 +54,8 @@ class RecurrentThread(Thread):
     def __LoopFunc(self):
         # clock type CLOCK_MONOTONIC = 1
         tfd = timerfd_create(1, 0)
-        spec = itimerspec.from_seconds(self.__inter, self.__inter)
-        timerfd_settime(tfd, 0, ctypes.byref(spec), None)
+        
+        timerfd_settime(tfd, self.__inter, self.__inter)
 
         while not self.__quit:
             try:
@@ -65,7 +65,7 @@ class RecurrentThread(Thread):
                 print(f"[RecurrentThread] target func raise exception: name={info[0].__name__}, args={str(info[1].args)}")
 
             try:
-                buf = os.read(tfd, 8)
+                timerfd_gettime(tfd)
                 # print(struct.unpack("Q", buf)[0])
             except OSError as e:
                 if e.errno != errno.EAGAIN:
