@@ -31,23 +31,30 @@ if platform.system() == "Windows":
     from ctypes import wintypes
     kernel32 = ctypes.windll.kernel32
     INFINITE=wintypes.DWORD(-1)
+    PTIMERAPCROUTINE  = ctypes.WINFUNCTYPE(None, wintypes.LPVOID, wintypes.DWORD, wintypes.DWORD)
+    @PTIMERAPCROUTINE
+    def timer_callback(arg, timer_low, timer_high):
+        print(f'CALLBACK: {timer_low / 1e7:.2f}')
     # 重写Timer方法
     def Timer_init(self, time :float, period :float):
         self.handle = kernel32.CreateWaitableTimerW(None, True, None)
-        due_time = wintypes.LARGE_INTEGER()
-        due_time.QuadPart = -int(time * 10000000) # 秒转100纳秒
-        due_time.HighPart = -1
+        due_time = wintypes.LARGE_INTEGER(-int(time * 10000000)) # 秒转100纳秒
         period = int(period*1000) # 秒转毫秒
         # https://learn.microsoft.com/zh-cn/windows/win32/api/synchapi/nf-synchapi-setwaitabletimer
-        def timer_callback():
-            print("Timer callback triggered.Unknow Why not callback")
-        TIMERAPCROUTINE = ctypes.WINFUNCTYPE(None, wintypes.HANDLE, wintypes.ULONG, wintypes.ULONG)
-        timer_callback_func = TIMERAPCROUTINE(timer_callback)
-        if not kernel32.SetWaitableTimer(self.handle, ctypes.byref(due_time), period, timer_callback_func, 0, True):
+        if not kernel32.SetWaitableTimer(self.handle, ctypes.byref(due_time), period, timer_callback, 0, True):
             raise OSError("Failed to set waitable timer.")
     def Timer_blockWait(self):
-        kernel32.WaitForSingleObject(self.handle, INFINITE)
+        result = kernel32.WaitForSingleObjectEx(self.handle, INFINITE,True)
+        if result == 0:
+            print('WAIT: Successful')
+        elif result == 192:
+            print('WAIT: APC Executed\n')
+        elif result == -1:
+            raise ctypes.WinError(ctypes.get_last_error())
+        else:
+            raise OSError(f'Unexpected wait result: {result}')
     def Timer_close(self):
+        kernel32.CancelWaitableTimer(self.handle)
         kernel32.CloseHandle(self.handle)
     Timer.__init__ = Timer_init
     Timer.blockWait = Timer_blockWait
