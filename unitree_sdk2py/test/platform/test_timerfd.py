@@ -1,10 +1,8 @@
 from unitree_sdk2py.utils.hz_sample import HZSample
 
-
-
-
 if __name__ ==  "__main__":
-    HZSample().Start()
+    hz=HZSample(1.0)
+    hz.Start()
     while True:
-        pass
+        hz.Sample()
 
