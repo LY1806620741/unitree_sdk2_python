@@ -60,8 +60,11 @@ jobs:
         git clone https://github.com/eclipse-cyclonedds/cyclonedds-python -b releases/${{ env.VERSION }} --depth=1
         cd cyclonedds-python
         sed -i "s~https://github.com/eclipse-cyclonedds/cyclonedds.git~https://github.com/eclipse-cyclonedds/cyclonedds -b releases/${{ env.VERSION }} --depth=1~g" pyproject.toml
-        sed -i 's/\(^skip = "\)/\1cp3{6..10}-* /' pyproject.toml
+        echo "debugprintpoint1"
+        sed -i 's/\(^skip = "\)/\1cp3{6..10}-* /g' pyproject.toml
+        echo "printpoint2"
         sed -i 's/delvewheel==0\.0\.18/delvewheel==1\.6\.0/g' pyproject.toml
+        echo "printpoint3"
         sed -i 's/(?<="Programming Language :: Python :: 3.10",.*?)/\n        "Programming Language :: Python :: 3.11",\n        "Programming Language :: Python :: 3.12",\n        "Programming Language :: Python :: 3.13",/g'  setup.py
         pip install --user cibuildwheel==2.18.*
         python -m cibuildwheel --output-dir wheelhouse .
@@ -93,7 +96,7 @@ jobs:
     - name: upload package and dependency
       uses: actions/upload-artifact@v4
       with:
-        name: unitree_sdk2_python${{ matrix.python-version }}_${{ env.VERSION }}_winx64
+        name: unitree_sdk2_python${{ matrix.python-version }}_${{ env.VERSION }}_${{runner.os}}_${{runner.arch}}
         path:  |
           dist/*
 
