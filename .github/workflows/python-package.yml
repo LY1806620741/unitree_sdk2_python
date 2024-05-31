@@ -60,17 +60,17 @@ jobs:
       if: startsWith(runner.os, 'macOS')
       run: |
         brew install gnu-sed
-        witch sed
+        which sed
         export PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
-        witch sed
+        which sed
 
     - name: build cyclonedds-python in unix
       if: startsWith(runner.os, 'Linux') || startsWith(runner.os, 'macOS')
       run: |
-        witch sed
+        which sed
         if [ "${{ startsWith(runner.os, 'macOS') }}" ]; then
           PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
-          witch sed
+          which sed
         fi
         git clone https://github.com/eclipse-cyclonedds/cyclonedds-python -b releases/${{ env.VERSION }} --depth=1
         cd cyclonedds-python
