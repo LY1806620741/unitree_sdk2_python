@@ -60,7 +60,7 @@ jobs:
       if: startsWith(runner.os, 'macOS')
       run: |
         brew install gnu-sed
-        export PATH="/usr/local/opt/homebrew/bin:$PATH"
+        export PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
 
     - name: build cyclonedds-python in unix
       if: startsWith(runner.os, 'Linux') || startsWith(runner.os, 'macOS')
@@ -78,8 +78,8 @@ jobs:
         python -m cibuildwheel --output-dir wheelhouse .
         ls
         ls ..
-        ls cyclonedds-python
-        tar zcvf  cyclonedds.tar.gz -C cyclonedds-python/cyclonedds-build .
+        ls cyclonedds
+        tar zcvf  cyclonedds.tar.gz -C cyclonedds/cyclonedds-build .
       shell: bash
 
     # 构建宇树python sdk本身
