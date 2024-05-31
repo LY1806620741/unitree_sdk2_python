@@ -68,7 +68,7 @@ jobs:
       if: startsWith(runner.os, 'Linux') || startsWith(runner.os, 'macOS')
       run: |
         witch sed
-        if [ "${{ runner.os == 'macOS' ]; then
+        if [ "${{ startsWith(runner.os, 'macOS') }}" ]; then
           PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
           witch sed
         fi
