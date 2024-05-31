@@ -47,9 +47,9 @@ jobs:
     - name: build cyclonedds-python in windows
       if: startsWith(runner.os, 'Windows')
       run: |
-        git clone https://github.com/eclipse-cyclonedds/cyclonedds-python -b releases/${{ github.event.inputs.name }} --depth=1
+        git clone https://github.com/eclipse-cyclonedds/cyclonedds-python -b releases/${{ github.event.inputs.c_cyclonedds_version }} --depth=1
         cd cyclonedds-python
-        (Get-Content pyproject.toml) -replace 'https://github.com/eclipse-cyclonedds/cyclonedds.git','https://github.com/eclipse-cyclonedds/cyclonedds -b releases/${{ github.event.inputs.name }} --depth=1' | Set-Content pyproject.toml
+        (Get-Content pyproject.toml) -replace 'https://github.com/eclipse-cyclonedds/cyclonedds.git','https://github.com/eclipse-cyclonedds/cyclonedds -b releases/${{ github.event.inputs.c_cyclonedds_version }} --depth=1' | Set-Content pyproject.toml
         (Get-Content pyproject.toml) -replace '(?<=^skip = ")','cp3{6..10}-* ' | Set-Content pyproject.toml
         (Get-Content pyproject.toml) -replace 'delvewheel==0.0.18','delvewheel==1.6.0' | Set-Content pyproject.toml
         (Get-Content setup.py) -replace '(?<="Programming Language :: Python :: 3.10",.*?)', "`n        `"Programming Language :: Python :: 3.11`",`n        `"Programming Language :: Python :: 3.12`",`n        `"Programming Language :: Python :: 3.13`","  | Set-Content setup.py
@@ -70,10 +70,10 @@ jobs:
         if [ "${{ startsWith(runner.os, 'macOS') }}" ]; then
           PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
         fi
-        git clone https://github.com/eclipse-cyclonedds/cyclonedds-python -b releases/${{ github.event.inputs.name }} --depth=1
+        git clone https://github.com/eclipse-cyclonedds/cyclonedds-python -b releases/${{ github.event.inputs.c_cyclonedds_version }} --depth=1
         cd cyclonedds-python
         
-        sed -i "s/https:\/\/github.com\/eclipse-cyclonedds\/cyclonedds.git/https:\/\/github.com\/eclipse-cyclonedds\/cyclonedds -b releases\/${{ github.event.inputs.name }} --depth=1/g" pyproject.toml
+        sed -i "s/https:\/\/github.com\/eclipse-cyclonedds\/cyclonedds.git/https:\/\/github.com\/eclipse-cyclonedds\/cyclonedds -b releases\/${{ github.event.inputs.c_cyclonedds_version }} --depth=1/g" pyproject.toml
         echo "debugprintpoint1"
         sed -i 's/\(^skip = "\)/\1cp3{6..10}-* /g' pyproject.toml
         echo "printpoint2"
@@ -104,7 +104,7 @@ jobs:
     # 收集构建产物
     - name: collect binary
       run: |
-        mv ${{ github.workspace }}/cyclonedds-python/cyclonedds.tar.gz dist/cyclonedds${{ github.event.inputs.name }}_${{runner.arch}}.tar.gz
+        mv ${{ github.workspace }}/cyclonedds-python/cyclonedds.tar.gz dist/cyclonedds${{ github.event.inputs.c_cyclonedds_version }}_${{runner.arch}}.tar.gz
         mv ${{ github.workspace }}/cyclonedds-python/wheelhouse/* dist/
         mv ${{ github.workspace }}/dist/* dist/
 
@@ -112,7 +112,7 @@ jobs:
     - name: upload package and dependency
       uses: actions/upload-artifact@v4
       with:
-        name: unitree_sdk2_python${{ matrix.python-version }}_cyclonedds${{ github.event.inputs.name }}_${{runner.os}}_${{runner.arch}}
+        name: unitree_sdk2_python${{ matrix.python-version }}_cyclonedds${{ github.event.inputs.c_cyclonedds_version }}_${{runner.os}}_${{runner.arch}}
         path:  |
           dist/*
 
