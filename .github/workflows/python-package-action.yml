@@ -100,6 +100,7 @@ jobs:
 
     # 收集构建产物
     - name: collect binary
+      if: startsWith(runner.os, 'Windows')
       run: |
         mv ${{ github.workspace }}/cyclonedds-python/wheelhouse/* dist/
         mv ${{ github.workspace }}/dist/* dist/
