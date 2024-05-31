@@ -12,6 +12,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       VERSION: 0.10.x
+      ACTIONS_STEP_DEBUG: True
     strategy:
       fail-fast: false
       matrix:
