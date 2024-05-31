@@ -82,9 +82,6 @@ jobs:
         sed -i 's/(?<="Programming Language :: Python :: 3.10",.*?)/\n        "Programming Language :: Python :: 3.11",\n        "Programming Language :: Python :: 3.12",\n        "Programming Language :: Python :: 3.13",/g'  setup.py
         pip install --user cibuildwheel==2.18.*
         python -m cibuildwheel --output-dir wheelhouse .
-        ls cyclonedds
-        find ../ -name "cyclonedds-build"
-        tar zcvf  cyclonedds.tar.gz -C cyclonedds/cyclonedds-build .
       shell: bash
 
     # 构建宇树python sdk本身
@@ -104,7 +101,6 @@ jobs:
     # 收集构建产物
     - name: collect binary
       run: |
-        mv ${{ github.workspace }}/cyclonedds-python/cyclonedds.tar.gz dist/cyclonedds${{ github.event.inputs.c_cyclonedds_version }}_${{runner.arch}}.tar.gz
         mv ${{ github.workspace }}/cyclonedds-python/wheelhouse/* dist/
         mv ${{ github.workspace }}/dist/* dist/
 
