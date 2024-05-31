@@ -9,13 +9,14 @@ on:
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: ${{ matrix.os }}
     env:
       VERSION: 0.10.x
     strategy:
       fail-fast: false
       matrix:
         python-version: ["3.11"]
+        os: [macos-latest, windows-latest, ubuntu-latest]
 
     steps:
       # 初始化
@@ -39,7 +40,8 @@ jobs:
         pip install build
 
     # 由于cyclonedds-python暂时没有提供python3.11 顺带也编译了 issue:https://github.com/eclipse-cyclonedds/cyclonedds-python/issues/221
-    - name: build cyclonedds-python
+    - name: build cyclonedds-python in windows
+      if: startsWith(runner.os, 'Windows')
       run: |
         git clone https://github.com/eclipse-cyclonedds/cyclonedds-python -b releases/${{ env.VERSION }} --depth=1
         cd cyclonedds-python
@@ -52,12 +54,38 @@ jobs:
         tar zcvf  cyclonedds.tar.gz -C cyclonedds-build .
       shell: pwsh
 
+    - name: build cyclonedds-python in unix
+      if: startsWith(runner.os, 'Linux') || startsWith(runner.os, 'macOS')
+      run: |
+        git clone https://github.com/eclipse-cyclonedds/cyclonedds-python -b releases/${{ env.VERSION }} --depth=1
+        cd cyclonedds-python
+        sed -i "s~https://github.com/eclipse-cyclonedds/cyclonedds.git~https://github.com/eclipse-cyclonedds/cyclonedds -b releases/${{ env.VERSION }} --depth=1~g" pyproject.toml
+        sed -i 's/\(^skip = "\)/\1cp3{6..10}-* /' pyproject.toml
+        sed -i 's/delvewheel==0\.0\.18/delvewheel==1\.6\.0/g' pyproject.toml
+        sed -i 's/(?<="Programming Language :: Python :: 3.10",.*?)/\n        "Programming Language :: Python :: 3.11",\n        "Programming Language :: Python :: 3.12",\n        "Programming Language :: Python :: 3.13",/g'  setup.py
+        pip install --user cibuildwheel==2.18.*
+        python -m cibuildwheel --output-dir wheelhouse .
+        tar zcvf  cyclonedds.tar.gz -C cyclonedds-build .
+      shell: bash
+
     # 构建宇树python sdk本身
     - name: build package
       run: |
-        set CYCLONEDDS_HOME=${{ github.workspace }}/cyclonedds/install
+        ${{ if eq runner.os, 'Linux' }} || ${{ eq runner.os, 'macOS' }}
+        then
+          export CYCLONEDDS_HOME=${{ github.workspace }}/cyclonedds/install
+        ${{ else }}
+          set CYCLONEDDS_HOME=${{ github.workspace }}/cyclonedds/install
+        ${{ end }}
+        
         python -m build --wheel
-      shell: cmd
+      shell: |
+        ${{ if eq runner.os, 'Linux' }} || ${{ eq runner.os, 'macOS' }}
+        then
+          bash
+        ${{ else }}
+          cmd
+        ${{ end }}
 
     # 收集构建产物
     - name: collect binary
