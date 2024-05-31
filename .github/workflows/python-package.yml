@@ -69,23 +69,18 @@ jobs:
       shell: bash
 
     # 构建宇树python sdk本身
-    - name: build package
+    - name: build package unix
+      if: startsWith(runner.os, 'Linux') || startsWith(runner.os, 'macOS')
       run: |
-        ${{ if eq runner.os, 'Linux' }} || ${{ eq runner.os, 'macOS' }}
-        then
-          export CYCLONEDDS_HOME=${{ github.workspace }}/cyclonedds/install
-        ${{ else }}
-          set CYCLONEDDS_HOME=${{ github.workspace }}/cyclonedds/install
-        ${{ end }}
-        
+        export CYCLONEDDS_HOME=${{ github.workspace }}/cyclonedds/install
         python -m build --wheel
-      shell: |
-        ${{ if eq runner.os, 'Linux' }} || ${{ eq runner.os, 'macOS' }}
-        then
-          bash
-        ${{ else }}
-          cmd
-        ${{ end }}
+      shell: bash
+    - name: build package windows
+      if: startsWith(runner.os, 'Windows')
+      run: |
+        set CYCLONEDDS_HOME=${{ github.workspace }}/cyclonedds/install
+        python -m build --wheel
+      shell: cmd
 
     # 收集构建产物
     - name: collect binary
