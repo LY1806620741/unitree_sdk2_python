@@ -108,7 +108,7 @@ jobs:
       if: startsWith(runner.os, 'Linux') || startsWith(runner.os, 'macOS')
       run: |
         mv -f ${{ github.workspace }}/cyclonedds-python/wheelhouse/* dist/
-        mv -f ${{ github.workspace }}/dist/* dist/
+        # mv -f ${{ github.workspace }}/dist/* dist/
 
     # 上传到工作流制品库
     - name: upload package and dependency
