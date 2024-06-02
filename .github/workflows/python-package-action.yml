@@ -73,7 +73,7 @@ jobs:
         git clone https://github.com/eclipse-cyclonedds/cyclonedds-python -b releases/${{ github.event.inputs.c_cyclonedds_version }} --depth=1
         cd cyclonedds-python
         
-        sed -i "s/https:\/\/github.com\/eclipse-cyclonedds\/cyclonedds.git/https:\/\/github.com\/eclipse-cyclonedds\/cyclonedds -b releases\/${{ github.event.inputs.c_cyclonedds_version }} --depth=1/g" pyproject.toml
+        sed -i "s~https://github.com/eclipse-cyclonedds/cyclonedds.git~https://github.com/eclipse-cyclonedds/cyclonedds -b releases/${{ github.event.inputs.c_cyclonedds_version }} --depth=1~g" pyproject.toml
         echo "debugprintpoint1"
         sed -i 's/\(^skip = "\)/\1cp3{6..10}-* /g' pyproject.toml
         echo "printpoint2"
@@ -107,6 +107,8 @@ jobs:
     - name: collect binary
       if: startsWith(runner.os, 'Linux') || startsWith(runner.os, 'macOS')
       run: |
+        # 对复杂的不同平台目录机制信息收集
+        find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g' > dist/${{runner.os}}_${{runner.arch}}.txt
         mv -f ${{ github.workspace }}/cyclonedds-python/wheelhouse/* dist/
         # mv -f ${{ github.workspace }}/dist/* dist/
 
