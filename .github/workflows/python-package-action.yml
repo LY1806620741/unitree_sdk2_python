@@ -104,6 +104,11 @@ jobs:
       run: |
         mv ${{ github.workspace }}/cyclonedds-python/wheelhouse/* dist/
         mv ${{ github.workspace }}/dist/* dist/
+    - name: collect binary
+      if: startsWith(runner.os, 'Linux') || startsWith(runner.os, 'macOS')
+      run: |
+        mv -u ${{ github.workspace }}/cyclonedds-python/wheelhouse/* dist/
+        mv -u ${{ github.workspace }}/dist/* dist/
 
     # 上传到工作流制品库
     - name: upload package and dependency
