@@ -34,7 +34,7 @@ if platform.system() == "Windows":
     PTIMERAPCROUTINE  = ctypes.WINFUNCTYPE(None, wintypes.LPVOID, wintypes.DWORD, wintypes.DWORD)
     @PTIMERAPCROUTINE
     def timer_callback(arg, timer_low, timer_high):
-        print(f'CALLBACK: {timer_low / 1e7:.2f}')
+        pass
     # 重写Timer方法
     def Timer_init(self, time :float, period :float):
         self.handle = kernel32.CreateWaitableTimerW(None, True, None)
@@ -116,7 +116,7 @@ elif platform.system() == "Linux":
         spec = itimerspec.from_seconds(period, time)
         timerfd_settime_linux(self.handle, 0, spec, None)
     def Timer_blockWait(self):
-        os.read(self.handle)
+        os.read(self.handle,8)
     def Timer_close(self):
         os.close(self.handle)
     Timer.__init__ = Timer_init
