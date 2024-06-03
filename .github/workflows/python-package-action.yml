@@ -10,6 +10,10 @@ on:
         description: 'clang cyclonedds version'
         required: false
         default: '0.10.x'
+      cyclonedds_python_version:
+        description: cyclonedds_python的版本，不填则跟随cyclonedds的C版本
+        required: false
+        default: 'releases/0.10.x'
 
 jobs:
   build:
@@ -47,7 +51,7 @@ jobs:
     - name: build cyclonedds-python in windows
       if: startsWith(runner.os, 'Windows')
       run: |
-        git clone https://github.com/eclipse-cyclonedds/cyclonedds-python -b releases/${{ github.event.inputs.c_cyclonedds_version }} --depth=1
+        git clone https://github.com/eclipse-cyclonedds/cyclonedds-python -b ${{ github.event.inputs.cyclonedds_python_version }} --depth=1
         cd cyclonedds-python
         (Get-Content pyproject.toml) -replace 'https://github.com/eclipse-cyclonedds/cyclonedds.git','https://github.com/eclipse-cyclonedds/cyclonedds -b releases/${{ github.event.inputs.c_cyclonedds_version }} --depth=1' | Set-Content pyproject.toml
         (Get-Content pyproject.toml) -replace '(?<=^skip = ")','cp3{6..10}-* ' | Set-Content pyproject.toml
