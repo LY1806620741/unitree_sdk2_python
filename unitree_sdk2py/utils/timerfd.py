@@ -44,15 +44,7 @@ if platform.system() == "Windows":
         if not kernel32.SetWaitableTimer(self.handle, ctypes.byref(due_time), period, timer_callback, 0, True):
             raise OSError("Failed to set waitable timer.")
     def Timer_blockWait(self):
-        result = kernel32.WaitForSingleObjectEx(self.handle, INFINITE,True)
-        if result == 0:
-            print('WAIT: Successful')
-        elif result == 192:
-            print('WAIT: APC Executed\n')
-        elif result == -1:
-            raise ctypes.WinError(ctypes.get_last_error())
-        else:
-            raise OSError(f'Unexpected wait result: {result}')
+        kernel32.WaitForSingleObject(self.handle, INFINITE)
     def Timer_close(self):
         kernel32.CancelWaitableTimer(self.handle)
         kernel32.CloseHandle(self.handle)
